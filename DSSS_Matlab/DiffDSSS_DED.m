@@ -9,6 +9,7 @@
 % 修改记录：
 %     版本号           日期          作者          说明
 %      V1.0          2025-1-1         Lv.          发布
+%      V1.1          2025-1-3         Lv.      修改脉冲成型部分
 % FindMe: https://space.bilibili.com/10179894?spm_id_from=333.1007.0.0
 % --------------------------------------------------------------------
 % Copyright 2024 Lv. All Rights Reserved. 
@@ -19,7 +20,7 @@
 close all; clear; clc;
 
 %% 消息生成
-bits=8;                        % 消息个数
+bits=8;                         % 消息个数
 mes=randi([0,1],1,bits);    
 bimes=2*mes-1;                  % 单极性码转双极性,BPSK  
 
@@ -40,13 +41,10 @@ m=2*m-1;                        % 逻辑映射
 kmes=kron(diffmes,m);           % 克罗内克积
 
 %% 脉冲成型
-% 假设我需要的通信速率是200bps，一秒接收200个消息bit，就是5ms一个bit
-% 假设发送频率48kHz，一秒发送48000个符号
-% 根据发送频率，5ms可以发送48k*5ms=240个符号
-% 扩频方式，一个消息bit长度是63
-% 每个符号需要重复发送240/63=3.81，向上取整是4次
-% 如果设置bits=200，脉冲成型长度为4，rmes的长度为50.4K，差不多一秒发完
-rect=4;
+% 假设带宽为4-8kHz，基带信号带宽为2kHz，码片长度为1/2kHz=0.5ms
+% 信号发送频率为48kHz，0.5ms能够发送0.5ms*48kHz=240个符号
+% 即一个码片(chip)长度为240
+rect=240;
 rmes=rectpulse(kmes,rect);
 
 %% 参数
@@ -105,10 +103,10 @@ for i=1:bits
 
     subplot(2,bits,i)                   % 作图
     plot(Pncor1)
-    axis([1 2*L -2*L 2*L])
+    axis([1 2*L -15000 15000])
     subplot(2,bits,i+bits)
     plot(Pncor2)
-    axis([1 2*L -2*L 2*L])
+    axis([1 2*L -15000 15000])
 
     cor1=(Pncor1(1,L-W:L+W)).^2;        % 选窗口求相关峰
     cor2=(Pncor2(1,L-W:L+W)).^2;

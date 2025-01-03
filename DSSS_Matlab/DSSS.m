@@ -10,6 +10,7 @@
 % 修改记录：
 %     版本号           日期          作者          说明
 %      V1.0          2025-1-1         Lv.          发布
+%      V1.1          2025-1-3         Lv.      修改脉冲成型部分
 % FindMe: https://space.bilibili.com/10179894?spm_id_from=333.1007.0.0
 % --------------------------------------------------------------------
 % Copyright 2024 Lv. All Rights Reserved. 
@@ -35,13 +36,10 @@ m=2*m-1;                        % 逻辑映射
 kmes=kron(bimes,m);             % 克罗内克积
 
 %% 脉冲成型
-% 假设我需要的通信速率是200bps，一秒接收200个消息bit，就是5ms一个bit
-% 假设发送频率48kHz，一秒发送48000个符号
-% 根据发送频率，5ms可以发送48k*5ms=240个符号
-% 扩频方式，一个消息bit长度是63
-% 每个符号需要重复发送240/63=3.81，向上取整是4次
-% 如果设置bits=200，脉冲成型长度为4，rmes的长度为50.4K，差不多一秒发完
-rect=4;
+% 假设带宽为4-8kHz，基带信号带宽为2kHz，码片长度为1/2kHz=0.5ms
+% 信号发送频率为48kHz，0.5ms能够发送0.5ms*48kHz=240个符号
+% 即一个码片(chip)长度为240
+rect=240;
 rmes=rectpulse(kmes,rect);
 
 %% 参数
@@ -115,45 +113,44 @@ title('扩频序列');
 subplot(3,1,3)
 plot(ex)
 title('解扩自相关峰值');
-axis([0 length(ex) -L L]);
 
 %% 查看频谱
-% %% 脉冲成型频谱
-% rmes_fft=fft(rmes)/fs;
-% figure
-% subplot(2,1,1);
-% plot(t,rmes);title('rmes');
-% title('脉冲成型信号');
-% subplot(2,1,2);
-% plot(f,fftshift(rmes_fft));title('rmes_fft');
-% title('脉冲成型频谱');
-% 
-% %% 上变频频谱
-% mes_fft=fft(mmes)/fs;
-% figure
-% subplot(2,1,1);
-% plot(t,mmes);title('mmes');
-% title('上变频信号');
-% subplot(2,1,2);
-% plot(f,fftshift(mes_fft));title('mes_fft');
-% title('上变频频谱');
-% 
-% %% 下变频频谱
-% mes_fft=fft(dmmes)/fs;
-% figure
-% subplot(2,1,1);
-% plot(t,dmmes);title('dmmes');
-% title('下变频信号');
-% subplot(2,1,2);
-% plot(f,fftshift(mes_fft));title('mes_fft');
-% title('下变频频谱');
-% 
-% %% 低通滤波频谱
-% mes_fft=fft(fmes)/fs;
-% figure
-% subplot(2,1,1);
-% plot(t,fmes);title('fmes');
-% title('低通滤波信号');
-% subplot(2,1,2);
-% plot(f,fftshift(mes_fft));title('mes_fft');
-% title('低通滤波频谱');
+%% 脉冲成型频谱
+rmes_fft=fft(rmes)/fs;
+figure
+subplot(2,1,1);
+plot(t,rmes);title('rmes');
+title('脉冲成型信号');
+subplot(2,1,2);
+plot(f,fftshift(rmes_fft));title('rmes_fft');
+title('脉冲成型频谱');
+
+%% 上变频频谱
+mes_fft=fft(mmes)/fs;
+figure
+subplot(2,1,1);
+plot(t,mmes);title('mmes');
+title('上变频信号');
+subplot(2,1,2);
+plot(f,fftshift(mes_fft));title('mes_fft');
+title('上变频频谱');
+
+%% 下变频频谱
+mes_fft=fft(dmmes)/fs;
+figure
+subplot(2,1,1);
+plot(t,dmmes);title('dmmes');
+title('下变频信号');
+subplot(2,1,2);
+plot(f,fftshift(mes_fft));title('mes_fft');
+title('下变频频谱');
+
+%% 低通滤波频谱
+mes_fft=fft(fmes)/fs;
+figure
+subplot(2,1,1);
+plot(t,fmes);title('fmes');
+title('低通滤波信号');
+subplot(2,1,2);
+plot(f,fftshift(mes_fft));title('mes_fft');
+title('低通滤波频谱');
