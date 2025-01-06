@@ -2,7 +2,7 @@
 % 项目地址：https://github.com/LvGitHub-9/SpreadSpectrumCommunication
 % 模块名称: 直接序列扩频的频域差分能量检测
 % 文件名称：DiffDSSS_DED.m
-% 版    本：V1.0
+% 版    本：V1.2
 % 说    明：差分直扩方式的频域能量检测方法，相较于时域差分检测，在单片机
 %           平台用DSP库和FPU实现更快
 % 作    者: 小吕同学
@@ -10,6 +10,7 @@
 %     版本号           日期          作者          说明
 %      V1.0          2025-1-1         Lv.          发布
 %      V1.1          2025-1-3         Lv.      修改脉冲成型部分
+%      V1.2          2025-1-6         Lv.      修改脉冲成型部分
 % FindMe: https://space.bilibili.com/10179894?spm_id_from=333.1007.0.0
 % --------------------------------------------------------------------
 % Copyright 2024 Lv. All Rights Reserved. 
@@ -42,9 +43,10 @@ kmes=kron(diffmes,m);           % 克罗内克积
 
 %% 脉冲成型
 % 假设带宽为4-8kHz，基带信号带宽为2kHz，码片长度为1/2kHz=0.5ms
-% 信号发送频率为48kHz，0.5ms能够发送0.5ms*48kHz=240个符号
-% 即一个码片(chip)长度为240
-rect=240;
+% 信号发送频率为48kHz，0.5ms能够发送0.5ms*48kHz=24个符号
+% 即一个码片(chip)长度为24
+% 脉冲成型大小影响码片时间，进而影响带宽
+rect=24;
 rmes=rectpulse(kmes,rect);
 
 %% 参数

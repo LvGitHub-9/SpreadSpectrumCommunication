@@ -1,4 +1,20 @@
-%% chip（Kimi.ai生成的代码）
+% --------------------------------------------------------------------
+% 项目地址：https://github.com/LvGitHub-9/SpreadSpectrumCommunication
+% 模块名称: 码片时间研究
+% 文件名称：chip.m
+% 版    本：V1.0
+% 说    明：研究码片时间和信号频谱变化
+% 作    者: 小吕同学
+% 修改记录：
+%     版本号           日期          作者          说明
+%      V1.0          2025-1-6         Lv.          发布
+% FindMe: https://space.bilibili.com/10179894?spm_id_from=333.1007.0.0
+% --------------------------------------------------------------------
+% Copyright 2024 Lv. All Rights Reserved. 
+% Distributed under MIT license. 
+% See file LICENSE for detail or copy at https://opensource.org/licenses/MIT 
+
+%% 码片时间（chip）
 close all; clear; clc;
 
 %% 参数设置

@@ -2,13 +2,14 @@
 % 项目地址：https://github.com/LvGitHub-9/SpreadSpectrumCommunication
 % 模块名称: 差分编码直接序列扩频DiffDSSS
 % 文件名称：DiffDSSS.m
-% 版    本：V1.0
+% 版    本：V1.2
 % 说    明：本质上还是直扩，只是加了一个差分编码，用来解决相位问题；
 % 作    者: 小吕同学
 % 修改记录：
 %     版本号           日期          作者          说明
 %      V1.0          2025-1-1         Lv.          发布
 %      V1.1          2025-1-3         Lv.      修改脉冲成型部分
+%      V1.2          2025-1-6         Lv.      修改脉冲成型部分
 % FindMe: https://space.bilibili.com/10179894?spm_id_from=333.1007.0.0
 % --------------------------------------------------------------------
 % Copyright 2024 Lv. All Rights Reserved. 
@@ -41,9 +42,10 @@ kmes=kron(diffmes,m);           % 克罗内克积
 
 %% 脉冲成型
 % 假设带宽为4-8kHz，基带信号带宽为2kHz，码片长度为1/2kHz=0.5ms
-% 信号发送频率为48kHz，0.5ms能够发送0.5ms*48kHz=240个符号
-% 即一个码片(chip)长度为240
-rect=240;
+% 信号发送频率为48kHz，0.5ms能够发送0.5ms*48kHz=24个符号
+% 即一个码片(chip)长度为24
+% 脉冲成型大小影响码片时间，进而影响带宽
+rect=24;
 rmes=rectpulse(kmes,rect);
 
 %% 参数
@@ -53,8 +55,6 @@ fs=48e3;                        % 采样频率48kHz
 ts=1/fs;                        % 时域采样间隔
 T=length(rmes)/fs;              % 发送时间
 t=0:ts:T-ts;                    % 时域时间点
-% df=fs/length(t);                % 频率间隔
-% f=-fs/2:df:fs/2-df;             % 频域频率点
 
 %% 上变频
 mmes=rmes.*cos(2*pi*fc*t);      % 调制
@@ -77,7 +77,7 @@ lpf = filter(fircoef,1,[dmmes zeros(1,Delay)]);
 fmes = lpf(Delay+1:end);
 
 %% 相关解扩
-en=zeros(1,bits+1);               % 存储解扩序列
+en=zeros(1,bits+1);             % 存储解扩序列
 ex=[];                          % 存储自相关后的序列
 W=floor(L/4);                   % 选取自相关峰值窗口的长度
 buf=zeros(1,L);                 % 存储一个符号长度
