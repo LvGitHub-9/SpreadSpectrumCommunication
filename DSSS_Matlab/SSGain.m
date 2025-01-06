@@ -42,7 +42,6 @@ subplot(2,1,2);
 plot(f,fftshift(bbmes_fft));title('bbmes_fft');
 title('原始信号频谱');
 
-
 %% 扩频信号频谱
 rect=240;
 kmes=rectpulse(kmes,rect);
